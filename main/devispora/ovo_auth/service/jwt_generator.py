@@ -1,5 +1,7 @@
+import json
 from datetime import datetime, timedelta
 
+import jsonpickle
 import jwt
 
 from devispora.ovo_auth.model.auth import AuthAudience
@@ -15,7 +17,7 @@ def generate_jwt(constants: Constants, claims: Token) -> str:
     payload = {
         'iat': start_time,
         'exp': expiry_time,
-        'ovo_claims': claims,
+        'ovo_claims': json.loads(jsonpickle.encode(claims, unpicklable=False)),
         'aud': AuthAudience.OvO.value
 
     }
