@@ -6,6 +6,8 @@ from devispora.ovo_auth.model.token import Token
 def token_from_dynamodb(dynamodb_token: dict) -> Token:
     new_token = Token(
         token_id=dynamodb_token['token_id'],
+        enabled=dynamodb_token['enabled'],
+        redeem_code=dynamodb_token['redeem_code'],
         discord_id=decimal_to_string(dynamodb_token['discord_id']),
         groups=dynamodb_token['groups']
     )

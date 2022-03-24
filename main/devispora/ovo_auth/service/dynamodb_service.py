@@ -9,8 +9,11 @@ class DynamoDBService:
     pass
 
 
-def retrieve_token(token_id: str):
+def retrieve_token(redeem_code: str):
     table = dynamodb.Table(token_table_name)
-    expression = Key('token_id').eq(token_id)
-    response = table.query(KeyConditionExpression=expression)
+    expression = Key('redeem_code').eq(redeem_code)
+    response = table.query(
+        IndexName='redeem_code-index',
+        KeyConditionExpression=expression
+    )
     return response['Items']

@@ -14,12 +14,13 @@ def process_token(token_id: str):
     token_result = retrieve_token_information(token_id)
     if token_result.accepted:
         target = token_from_dynamodb(token_result.token_info)
-        generated_jwt = generate_jwt(constants, target)
-        return generic_response({
-            'jwt': generated_jwt
-        })
-    else:
-        return error_response(401, RequestException(RequestExceptionMessage.CodeNoLongerValid))
+        if target.enabled is True:
+            generated_jwt = generate_jwt(constants, target)
+            return generic_response({
+                'jwt': generated_jwt
+            })
+    # else
+    return error_response(401, RequestException(RequestExceptionMessage.CodeNoLongerValid))
 
 
 def retrieve_token_information(token_id: str) -> []:
