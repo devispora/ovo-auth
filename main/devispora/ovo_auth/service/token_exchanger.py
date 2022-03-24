@@ -3,19 +3,20 @@ from devispora.ovo_auth.model.constants import Constants
 from devispora.ovo_auth.model.helpers.dynamodb_token_converter import token_from_dynamodb
 from devispora.ovo_auth.model.responses import error_response, generic_response
 from devispora.ovo_auth.model.token_result import TokenResult
-from devispora.ovo_auth.service.dynamodb_service import retrieve_token
+from devispora.ovo_auth.service.dynamodb_service import retrieve_token, invalidate_token
 from devispora.ovo_auth.service.jwt_generator import generate_jwt
 
 
 constants = Constants()
 
 
-def process_token(token_id: str):
-    token_result = retrieve_token_information(token_id)
+def process_token(redeem_code: str):
+    token_result = retrieve_token_information(redeem_code)
     if token_result.accepted:
         target = token_from_dynamodb(token_result.token_info)
         if target.enabled is True:
             generated_jwt = generate_jwt(constants, target)
+            invalidate_token(target)
             return generic_response({
                 'jwt': generated_jwt
             })
